@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroVision | Smart Farming</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">✳</div>
+            <div>
+                <h2>AgroVision</h2>
+                <span>SMART FARMING</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="/" class="nav-item active">⌂ &nbsp; Overview</a>
+            <a href="#prediction" class="nav-item">↗ &nbsp; Yield Prediction</a>
+            <a href="#insights" class="nav-item">✧ &nbsp; Farm Insights</a>
+            <a href="#history" class="nav-item">◷ &nbsp; Farm History</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="leaf-art">🌱</div>
+            <p>Grow smarter.<br>Harvest better.</p>
+            <span>Every season, a new beginning.</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">YOUR FARM, YOUR FUTURE</p>
+                <h1>Good day, Farmer <span>✦</span></h1>
+                <p class="subtitle">Let's make your next harvest a better one.</p>
+            </div>
+
+            <div class="profile">
+                <div class="profile-icon">🌾</div>
+                <div>
+                    <strong>Agro Assistant</strong>
+                    <span>Farm companion</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="welcome-banner">
+            <div class="banner-content">
+                <span class="banner-tag">✦ SMART AGRICULTURE</span>
+                <h2>Every seed holds<br>a <em>future.</em></h2>
+                <p>
+                    Explore your farm's potential using your own soil
+                    and weather information.
+                </p>
+                <a href="#prediction" class="banner-button">
+                    Explore your farm <span>→</span>
+                </a>
+            </div>
+
+            <div class="banner-illustration">🌿</div>
+            <div class="banner-circle"></div>
+        </section>
+
+        <section class="section-heading" id="prediction">
+            <div>
+                <p class="eyebrow">YOUR FARM OVERVIEW</p>
+                <h2>Let's understand your farm</h2>
+            </div>
+            <span class="demo-label">MODEL ESTIMATE</span>
+        </section>
+
+        <section class="prediction-layout">
+
+            <div class="input-card">
+                <div class="card-heading">
+                    <div class="heading-icon">⌁</div>
+                    <div>
+                        <h3>Tell us about your farm</h3>
+                        <p>Enter your farm, soil, and weather details.</p>
+                    </div>
+                </div>
+
+                <form method="POST">
+
+                    <label for="location">Farm location</label>
+                    <input
+                        type="text"
+                        name="location"
+                        id="location"
+                        placeholder="Village or district"
+                        value="{{ request.form.get('location', '') }}"
+                        required
+                    >
+
+                    <label for="crop">What are you growing?</label>
+                    <select name="crop" id="crop" required>
+                        <option value="">Choose your crop</option>
+                        {% for crop_name in ["Rice", "Wheat", "Maize", "Cotton", "Groundnut"] %}
+                        <option value="{{ crop_name }}"
+                            {% if request.form.get('crop') == crop_name %}selected{% endif %}>
+                            {{ crop_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="land_area">Farm size <span>(acres)</span></label>
+                    <input
+                        type="number"
+                        name="land_area"
+                        id="land_area"
+                        min="0.1"
+                        step="0.1"
+                        placeholder="e.g. 2.5"
+                        value="{{ request.form.get('land_area', '') }}"
+                        required
+                    >
+
+                    <div class="form-subheading">
+                        <h4>Weather information</h4>
+                        <p>Use seasonal or locally measured values.</p>
+                    </div>
+
+                    <label for="temperature">Average temperature <span>(°C)</span></label>
+                    <input
+                        type="number"
+                        name="temperature"
+                        id="temperature"
+                        step="0.1"
+                        placeholder="e.g. 28"
+                        value="{{ request.form.get('temperature', '') }}"
+                        required
+                    >
+
+                    <label for="rainfall">Seasonal rainfall <span>(mm)</span></label>
+                    <input
+                        type="number"
+                        name="rainfall"
+                        id="rainfall"
+                        min="0"
+                        step="0.1"
+                        placeholder="e.g. 600"
+                        value="{{ request.form.get('rainfall', '') }}"
+                        required
+                    >
+
+                    <div class="form-subheading">
+                        <h4>Soil information</h4>
+                        <p>Enter values from a soil test when available.</p>
+                    </div>
+
+                    <label for="soil_moisture">Soil moisture <span>(%)</span></label>
+                    <input
+                        type="number"
+                        name="soil_moisture"
+                        id="soil_moisture"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        placeholder="e.g. 50"
+                        value="{{ request.form.get('soil_moisture', '') }}"
+                        required
+                    >
+
+                    <label for="soil_ph">Soil pH <span>(0–14)</span></label>
+                    <input
+                        type="number"
+                        name="soil_ph"
+                        id="soil_ph"
+                        min="0"
+                        max="14"
+                        step="0.1"
+                        placeholder="e.g. 6.5"
+                        value="{{ request.form.get('soil_ph', '') }}"
+                        required
+                    >
+
+                    <div class="form-grid">
+                        <div>
+                            <label for="nitrogen">Nitrogen (N)</label>
+                            <input
+                                type="number"
+                                name="nitrogen"
+                                id="nitrogen"
+                                min="0"
+                                step="0.1"
+                                placeholder="e.g. 50"
+                                value="{{ request.form.get('nitrogen', '') }}"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label for="phosphorus">Phosphorus (P)</label>
+                            <input
+                                type="number"
+                                name="phosphorus"
+                                id="phosphorus"
+                                min="0"
+                                step="0.1"
+                                placeholder="e.g. 30"
+                                value="{{ request.form.get('phosphorus', '') }}"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label for="potassium">Potassium (K)</label>
+                            <input
+                                type="number"
+                                name="potassium"
+                                id="potassium"
+                                min="0"
+                                step="0.1"
+                                placeholder="e.g. 30"
+                                value="{{ request.form.get('potassium', '') }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="predict-button">
+                        Generate farm insights <span>→</span>
+                    </button>
+                </form>
+
+                {% if error %}
+                <p class="error-message">{{ error }}</p>
+                {% endif %}
+            </div>
+
+            <div class="result-card">
+                {% if prediction %}
+
+                <div class="result-top">
+                    <span class="result-icon">🌾</span>
+                    <span class="result-status">HARVEST ESTIMATE</span>
+                </div>
+
+                <p class="result-label">Estimated total harvest</p>
+                <h2>{{ prediction.total_yield }} <small>model units</small></h2>
+
+                <p class="result-description">
+                    Estimated for {{ prediction.land_area }} acres of
+                    {{ prediction.crop }} in {{ prediction.location }}.
+                </p>
+
+                <div class="result-divider"></div>
+
+                <div class="result-details">
+                    <div>
+                        <span>Per acre estimate</span>
+                        <strong>{{ prediction.yield_per_acre }} model units</strong>
+                    </div>
+                    <div>
+                        <span>Farm area</span>
+                        <strong>{{ prediction.land_area }} acres</strong>
+                    </div>
+                </div>
+
+                <div class="revenue-box">
+                    <span>Prediction input summary</span>
+                    <h3>{{ prediction.crop }}</h3>
+                    <p>
+                        Temperature: {{ prediction.temperature }} °C<br>
+                        Rainfall: {{ prediction.rainfall }} mm<br>
+                        Soil moisture: {{ prediction.soil_moisture }}%<br>
+                        Soil pH: {{ prediction.soil_ph }}<br>
+                        N: {{ prediction.nitrogen }},
+                        P: {{ prediction.phosphorus }},
+                        K: {{ prediction.potassium }}
+                    </p>
+                </div>
+
+                <p class="estimate-note">
+                    This is a model estimate based on the entered values
+                    and the dataset used for training. It is not a
+                    guaranteed harvest result.
+                </p>
+
+                {% else %}
+
+                <div class="result-top">
+                    <span class="result-icon">✧</span>
+                    <span class="result-status">YOUR FARM INSIGHT</span>
+                </div>
+
+                <div class="empty-result">
+                    <div class="empty-illustration">🌾</div>
+                    <h3>Your harvest story<br>starts here.</h3>
+                    <p>
+                        Enter your farm details to receive an estimated
+                        harvest and useful growing insights.
+                    </p>
+                </div>
+
+                <div class="result-footer">
+                    <span>✦</span> Your farm. Your possibilities.
+                </div>
+
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="insights-section" id="insights">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">GROW WITH CONFIDENCE</p>
+                    <h2>Farm insights</h2>
+                </div>
+            </div>
+
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-icon weather-icon">☀</div>
+                    <span class="insight-tag">WEATHER</span>
+                    <h3>Weather awareness</h3>
+                    <p>
+                        Enter local rainfall and temperature to make
+                        the prediction reflect your conditions.
+                    </p>
+                    <span class="insight-link">Weather inputs →</span>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon soil-icon">♧</div>
+                    <span class="insight-tag">SOIL</span>
+                    <h3>Know your soil</h3>
+                    <p>
+                        Soil pH, moisture, and NPK values help describe
+                        the conditions used by the model.
+                    </p>
+                    <span class="insight-link">Soil inputs →</span>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon crop-icon">🌱</div>
+                    <span class="insight-tag">CROP CARE</span>
+                    <h3>Grow with guidance</h3>
+                    <p>
+                        Use soil-test results and local agricultural
+                        guidance when making crop-care decisions.
+                    </p>
+                    <span class="insight-link">Growing tips →</span>
+                </div>
+            </div>
+        </section>
+
+        {% if recommendations %}
+        <section class="recommendations">
+            <p class="eyebrow">SUGGESTIONS FOR YOUR FARM</p>
+            <h2>Growing recommendations</h2>
+
+            <div class="recommendation-list">
+                {% for item in recommendations %}
+                <div class="recommendation-item">
+                    <span>✦</span>
+                    <p>{{ item }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="history-section" id="history">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">YOUR FARM JOURNEY</p>
+                    <h2>Recent predictions</h2>
+                </div>
+            </div>
+
+            <div class="history-card">
+                {% if history %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Crop</th>
+                                <th>Temperature</th>
+                                <th>Rainfall</th>
+                                <th>Yield estimate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in history %}
+                            <tr>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }} °C</td>
+                                <td>{{ row[3] }} mm</td>
+                                <td>{{ row[9] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="history-empty">
+                    <span>◷</span>
+                    <p>Your farm predictions will appear here.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-brand">✳ AgroVision</div>
+            <p>Growing a more thoughtful future for agriculture.</p>
+            <span>Predictions depend on the training dataset and entered values.</span>
+        </footer>
+
+    </main>
+</div>
+</body>
+</html>
